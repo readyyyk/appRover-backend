@@ -1,3 +1,4 @@
 from .user import *
 from .poll import *
 from .file import *
+from .core import Base

@@ -26,7 +26,7 @@ class FileModel(Base):
     )
 
     size: Mapped[int] = mapped_column(
-        BIGINT()
+        BIGINT
     )
 
     name: Mapped[str] = mapped_column(
