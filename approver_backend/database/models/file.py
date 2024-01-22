@@ -39,7 +39,7 @@ class FileModel(Base):
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        server_default=func.now()  # TODO is call?
+        server_default=func.now()
     )
 
     owner: Mapped['UserModel'] = relationship(
