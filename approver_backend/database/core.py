@@ -1,12 +1,13 @@
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
-    AsyncSession,
-    async_sessionmaker
+    async_sessionmaker,
 )
+
 from .models import Base
 from os import getenv
 
-URL = getenv('CONNECT_URL')
+
+URL = getenv('DB_URL')
 
 engine = create_async_engine(URL)
 session_maker = async_sessionmaker(bind=engine)

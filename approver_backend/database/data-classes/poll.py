@@ -2,6 +2,7 @@ from .core import *
 from datetime import date
 from datetime import datetime
 from enum import Enum
+
 if TYPE_CHECKING:
     from .user import UserInfo
 

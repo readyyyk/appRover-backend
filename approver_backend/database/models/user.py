@@ -1,14 +1,17 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from .core import *
 from sqlalchemy import VARCHAR
 
-from .file import FileModel
-from .poll import PollModel
+if TYPE_CHECKING:
+    from .file import FileModel
+    from .poll import PollModel
+    from .share_poll_link import SharePollLinkModel
+    from .poll_users import PollUsersModel
 
 
 class UserModel(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id: Mapped[int] = mapped_column(
         autoincrement=True,
         primary_key=True
@@ -26,15 +29,19 @@ class UserModel(Base):
     )
 
     files: Mapped[List['FileModel']] = relationship(
-        # back_populates='owner'
+        back_populates='owner'
     )
     polls: Mapped[List['PollModel']] = relationship(
-        # back_populates='owner'
+        back_populates='owner'
+    )
+    voters: Mapped[List['PollUsersModel']] = relationship(
+        back_populates='user'
+    )
+    links: Mapped[List['SharePollLinkModel']] = relationship(
+        back_populates='owner'
     )
 
 
 __all__ = [
     'UserModel'
 ]
-
-

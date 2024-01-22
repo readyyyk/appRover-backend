@@ -1,19 +1,22 @@
 from datetime import date
-from typing import Literal, get_args
+from typing import Literal, get_args, TYPE_CHECKING, List
 
 from .core import *
 
-# from .user import UserModel
-# from .file import FileModel
-
 from sqlalchemy import VARCHAR, DATE, ForeignKey, Enum, Integer
+
+
+from .user import UserModel
+from .file import FileModel
+if TYPE_CHECKING:
+    from .poll_users import PollUsersModel
 
 
 PollState = Literal['frozen', 'active']
 
 
 class PollModel(Base):
-    __tablename__ = 'polls'
+    __tablename__ = 'poll'
 
     id: Mapped[int] = mapped_column(
         autoincrement=True,
@@ -58,20 +61,23 @@ class PollModel(Base):
     )
 
     file_id: Mapped[int] = mapped_column(
-        # ForeignKey(f'{FileModel.__tablename__}.id')
-        ForeignKey('files.id')
+        ForeignKey(f'{FileModel.__tablename__}.id')
     )
-    # file: Mapped['FileModel'] = relationship(
-    #     back_populates='polls'
-    # )
+    file: Mapped['FileModel'] = relationship(
+        back_populates='polls'
+    )
 
     owner_id: Mapped[int] = mapped_column(
-        # ForeignKey(f'{UserModel.__tablename__}.id')
-        ForeignKey('users.id')
+        ForeignKey(f'{UserModel.__tablename__}.id')
     )
-    # owner: Mapped['UserModel'] = relationship(
-    #     back_populates='polls'
-    # )
+    owner: Mapped['UserModel'] = relationship(
+        back_populates='polls'
+    )
+
+    #
+    users: Mapped[List['PollUsersModel']] = relationship(
+        back_populates='poll'
+    )
 
 
 __all__ = [
