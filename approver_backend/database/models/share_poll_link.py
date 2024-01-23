@@ -4,11 +4,10 @@ from sqlalchemy import (
 )
 from datetime import datetime
 from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .poll import PollModel
-    from .user import UserModel
-    from .poll_users import PollRole, PollRoleColumn
+from approver_backend.database.enums import PollRole
+from sqlalchemy import Enum
+from .poll import PollModel
+from .user import UserModel
 
 
 class SharePollLinkModel(Base):
@@ -23,8 +22,11 @@ class SharePollLinkModel(Base):
         DateTime
     )
 
-    role: Mapped['PollRole'] = mapped_column(
-        PollRoleColumn
+    role: Mapped[PollRole] = mapped_column(
+        Enum(
+            PollRole,
+            validate_strings=True
+        )
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -45,5 +47,5 @@ class SharePollLinkModel(Base):
 
 
 __all__ = [
-    SharePollLinkModel,
+    'SharePollLinkModel',
 ]

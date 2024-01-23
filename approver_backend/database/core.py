@@ -15,5 +15,6 @@ session_maker = async_sessionmaker(bind=engine)
 
 async def init_database():
     async with engine.connect() as connection:
+        Base.registry.configure(cascade=True)
         await connection.run_sync(Base.metadata.create_all)
 

@@ -1,7 +1,7 @@
 from .core import *
 from datetime import date
 from datetime import datetime
-from enum import Enum
+from approver_backend.database.enums import PollState
 
 if TYPE_CHECKING:
     from .user import UserInfo
@@ -12,11 +12,6 @@ def check_deadline(_date: date):
     return _date
 
 
-class StateEnum(str, Enum):
-    frozen = 'frozen'
-    active = 'active'
-
-
 class Poll(BaseModel):
     id: int
     title: str
@@ -25,6 +20,6 @@ class Poll(BaseModel):
     voter_counter: int
     voted_for: int
     voted_against: int
-    state: StateEnum
+    state: PollState
     file: int
     owner: 'UserInfo'
