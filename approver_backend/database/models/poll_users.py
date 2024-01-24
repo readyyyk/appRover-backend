@@ -6,18 +6,9 @@ from sqlalchemy import (
 )
 from typing import TYPE_CHECKING, get_args, Literal, Optional
 
-if TYPE_CHECKING:
-    from .poll import PollModel
-    from .user import UserModel
-
-
-PollRole = Literal['voter', 'viewer']
-PollRoleColumn = Enum(
-    *get_args(PollRole),
-    name="poll_role",
-    create_constraint=True,
-    validate_strings=True,
-)
+from .poll import PollModel
+from .user import UserModel
+from approver_backend.database.enums import PollRole
 
 
 class PollUsersModel(Base):
@@ -28,15 +19,19 @@ class PollUsersModel(Base):
         nullable=True
     )
 
-    role: Mapped['PollRole'] = mapped_column(
-        PollRoleColumn
+    role: Mapped[PollRole] = mapped_column(
+        Enum(
+            PollRole,
+            validate_strings=True
+        )
     )
 
     poll: Mapped['PollModel'] = relationship(
-        back_populates='voters'
+        back_populates='users'
     )
     poll_id: Mapped[int] = mapped_column(
-        ForeignKey(f'{PollModel.__tablename__}.id')
+        ForeignKey(f'{PollModel.__tablename__}.id'),
+        primary_key=True
     )
 
     user_id: Mapped[int] = mapped_column(
@@ -48,6 +43,6 @@ class PollUsersModel(Base):
 
 
 __all__ = [
-    PollRole,
-    PollUsersModel,
+    'PollRole',
+    'PollUsersModel',
 ]

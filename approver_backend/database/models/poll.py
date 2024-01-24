@@ -4,15 +4,13 @@ from typing import Literal, get_args, TYPE_CHECKING, List
 from .core import *
 
 from sqlalchemy import VARCHAR, DATE, ForeignKey, Enum, Integer
+from approver_backend.database.enums import PollState
 
 
 from .user import UserModel
 from .file import FileModel
 if TYPE_CHECKING:
     from .poll_users import PollUsersModel
-
-
-PollState = Literal['frozen', 'active']
 
 
 class PollModel(Base):
@@ -52,12 +50,10 @@ class PollModel(Base):
 
     state: Mapped['PollState'] = mapped_column(
         Enum(
-            *get_args(PollState),
-            name="poll_status",
-            create_constraint=True,
-            validate_strings=True,
+            PollState,
+            validate_strings=True
         ),
-        default='active'
+        default=PollState.active
     )
 
     file_id: Mapped[int] = mapped_column(
