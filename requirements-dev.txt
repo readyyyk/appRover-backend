@@ -1,1 +1,6 @@
 aiosqlite~=0.19.0
+python-dotenv~=1.0.1
+pytest~=7.4.4
+pytest-asyncio~=0.23.3
+randomuser~=1.6
+pytest-dependency~=0.6.0
