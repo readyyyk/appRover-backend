@@ -4,7 +4,7 @@ from sqlalchemy import (
     Boolean,
     Enum
 )
-from typing import TYPE_CHECKING, get_args, Literal, Optional
+from typing import Optional
 
 from .poll import PollModel
 from .user import UserModel
@@ -43,6 +43,5 @@ class PollUsersModel(Base):
 
 
 __all__ = [
-    'PollRole',
     'PollUsersModel',
 ]

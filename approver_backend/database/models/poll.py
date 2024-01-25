@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Literal, get_args, TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List
 
 from .core import *
 
@@ -77,6 +77,5 @@ class PollModel(Base):
 
 
 __all__ = [
-    'PollState',
     'PollModel',
 ]
