@@ -1,15 +1,10 @@
 from .core import *
 from datetime import date
-from datetime import datetime
 from approver_backend.database.enums import PollState
+from approver_backend.database.utils import check_deadline
 
 if TYPE_CHECKING:
     from .user import UserInfo
-
-
-def check_deadline(_date: date):
-    assert _date > datetime.now().date(), 'Date must be greater than current date'
-    return _date
 
 
 class Poll(BaseModel):
