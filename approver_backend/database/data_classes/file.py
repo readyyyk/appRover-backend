@@ -21,12 +21,13 @@ class FileCreate(BaseModel):
 
 
 class FileInfo(BaseModel):
+    id: int
     size: int
     name: str
     filetype: str
     created_at: datetime
     owner_id: int
-    link: str               # not in model
+    link: str                       # not in model
 
 
 __all__ = [

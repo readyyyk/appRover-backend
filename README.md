@@ -1,16 +1,25 @@
 # AppRover backend
 
-## Run
+## Run ...
+
+### Common
+```shell
+poetry shell
+
+poetry install --only-root
+
+poetry run {script_name} 
+```
+
+### Run dev
 
 ```shell
-# activate venv
+poetry install --with dev
 
-poetry install
 poetry run dev
-
-# ... TODO to be added
 ```
-## Run tests
+
+### Run tests
 ```shell
 poetry run tests
 ```

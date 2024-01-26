@@ -1,17 +1,31 @@
-from dotenv import load_dotenv
+from os import (getenv, getcwd)
+
 from uvicorn import run
-from pytest import main
-from os import getcwd
 from pathlib import Path
-env_local_path = Path(getcwd()) / '.env.local'
+from dotenv import (find_dotenv, load_dotenv)
+
+load_dotenv(Path(getcwd()) / ".env", override=True)
+load_dotenv(Path(getcwd()) / ".env.local", override=True)
+
+from approver_backend.api import app
 
 
-def run_dev():
-    load_dotenv(env_local_path)
-    from approver_backend.api import app
-    run(app)
+def dev():
+    find_dotenv(".env.local", raise_error_if_not_found=True)
+    run("main:app", host="localhost", port=8000, reload=True)
 
 
-def run_tests():
-    load_dotenv(env_local_path)
-    main()
+def start():
+    find_dotenv(".env", raise_error_if_not_found=True)
+    run(
+        app,
+        host=getenv("HOST") or "0.0.0.0",
+        port=getenv("PORT") or 8000
+    )
+
+
+def test():
+    from pytest import main as tests_main
+
+    find_dotenv(".env.test", raise_error_if_not_found=True)
+    tests_main()
