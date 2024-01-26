@@ -14,10 +14,10 @@ python = "^3.11"
 sqlalchemy = "^2.0.25"
 fastapi = "^0.109.0"
 pydantic = "^2.5.3"
-python-jose = "^3.3.0"
 cryptography = "^42.0.1"
-passlib = "^1.7.4"
 bcrypt = "^4.1.2"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.6"
 uvicorn = "^0.27.0"
 loguru = "^0.7.2"
@@ -30,6 +30,7 @@ pytest = "^7.4.4"
 pytest-asyncio = "^0.23.3"
 randomuser = "^1.6"
 pytest-dependency = "^0.6.0"
+httpx = "^0.26.0"
 
 [build-system]
 requires = ["poetry-core"]

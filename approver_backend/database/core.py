@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
+    AsyncEngine
 )
 
 from .models import Base
@@ -9,8 +10,8 @@ from os import getenv
 
 URL = getenv('DB_URL')
 
-engine = create_async_engine(URL)
-session_maker = async_sessionmaker(bind=engine)
+engine: AsyncEngine = create_async_engine(URL)
+session_maker = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
 async def init_database():
