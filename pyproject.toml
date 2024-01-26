@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "approver-backend"
+version = "0.1.0"
+description = ""
+authors = ["readyyyk <mr.sairexer@gmail.com>", "halone228 <haloneprog@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+start = "main:start"
+dev = "main:dev"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "^2.0.25"
+fastapi = "^0.109.0"
+pydantic = "^2.5.3"
+python-jose = "^3.3.0"
+cryptography = "^42.0.1"
+passlib = "^1.7.4"
+bcrypt = "^4.1.2"
+python-multipart = "^0.0.6"
+uvicorn = "^0.27.0"
+loguru = "^0.7.2"
+
+
+[tool.poetry.group.dev.dependencies]
+aiosqlite = "^0.19.0"
+python-dotenv = "^1.0.1"
+pytest = "^7.4.4"
+pytest-asyncio = "^0.23.3"
+randomuser = "^1.6"
+pytest-dependency = "^0.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

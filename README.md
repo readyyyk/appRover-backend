@@ -3,9 +3,9 @@
 ## Run
 
 ```shell
-# activate venv
+poetry shell
 
-pip install -r requirements.txt
+poetry install --with dev
 
-# ... TODO to be added
+poetry run dev 
 ```
