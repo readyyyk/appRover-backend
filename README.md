@@ -5,7 +5,12 @@
 ```shell
 # activate venv
 
-pip install -r requirements.txt
+poetry install
+poetry run dev
 
 # ... TODO to be added
+```
+## Run tests
+```shell
+poetry run tests
 ```
