@@ -16,6 +16,9 @@ class TestUser:
             }
         )
         assert response.status_code == status.HTTP_200_OK
+        assert isinstance(response.json()['message'], int)
+        global id_stack
+        id_stack = response.json()['message']
 
     @mark.dependency(name='test_auth_user', depends=['test_create'])
     async def test_auth_user(self, random_user: RandomUser, t_client: AsyncClient):
@@ -43,9 +46,6 @@ class TestUser:
         )
         assert response.status_code == status.HTTP_200_OK
         assert response.json()['username'] == random_user.get_username()
-        assert isinstance(response.json()['message'], int)
-        global id_stack
-        id_stack = response.json()['message']
 
     @mark.dependency(name='test_get_user', depends=['test_create'])
     async def test_get_user(self, t_client, random_user: RandomUser):
