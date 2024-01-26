@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.scripts]
 start = "main:start"
 dev = "main:dev"
+test = "main:test"
 
 
 [tool.poetry.dependencies]
