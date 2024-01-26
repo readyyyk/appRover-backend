@@ -6,7 +6,7 @@
 ```shell
 poetry shell
 
-poetry install --root-only
+poetry install --only-root
 
 poetry run {script_name} 
 ```

@@ -5,9 +5,11 @@ description = ""
 authors = ["readyyyk <mr.sairexer@gmail.com>", "halone228 <haloneprog@gmail.com>"]
 readme = "README.md"
 
+
 [tool.poetry.scripts]
 start = "main:start"
 dev = "main:dev"
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -32,9 +34,6 @@ randomuser = "^1.6"
 pytest-dependency = "^0.6.0"
 httpx = "^0.26.0"
 
-[tool.poetry.scripts]
-dev = 'main:run_dev'
-tests = 'main:run_tests'
 
 [build-system]
 requires = ["poetry-core"]
