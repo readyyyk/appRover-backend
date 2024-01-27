@@ -1,6 +1,6 @@
 from approver_backend.database.core import async_sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 from approver_backend.database.models import UserModel
 
 
@@ -29,3 +29,12 @@ async def get_user(session: AsyncSession, user_id: int) -> UserModel:
     res = (await session.execute(stmt)).scalar()
     return res
 
+
+async def set_refresh_token(session: AsyncSession, user_id: int, refresh_token: str):
+    stmt = update(UserModel).where(
+        UserModel.id == user_id
+    ).values(
+        refresh_token=refresh_token
+    )
+    await session.execute(stmt)
+    await session.commit()

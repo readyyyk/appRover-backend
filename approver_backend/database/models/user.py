@@ -27,6 +27,9 @@ class UserModel(Base):
             context.get_current_parameters()["username"]
         ),
     )
+    refresh_token: Mapped[str] = mapped_column(
+        nullable=True
+    )
 
     files: Mapped[List['FileModel']] = relationship(
         back_populates='owner'

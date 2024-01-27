@@ -7,6 +7,42 @@ from approver_backend.database.data_classes import UserInfo
 from approver_backend.database.methods import get_user
 from .core import oauth_scheme, ALGORITHM, SECRET_KEY
 from loguru import logger
+from pydantic import BaseModel
+from datetime import timedelta, datetime
+
+
+class TokenPair(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class TokenResponse(TokenPair):
+    token_type: str
+
+
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+    headers={"WWW-Authenticate": "Bearer"},
+)
+
+
+async def create_access_token(
+        data: dict,
+        expire_delta_access: timedelta = timedelta(minutes=30),
+        expire_delta_refresh: timedelta = timedelta(days=30)
+) -> TokenResponse:
+    to_encode_access = data.copy()
+    to_encode_refresh = data.copy()
+    expire_access = datetime.utcnow() + expire_delta_access
+    expire_refresh = datetime.utcnow() + expire_delta_refresh
+    to_encode_access['exp'] = expire_access
+    to_encode_refresh['exp'] = expire_refresh
+    return TokenResponse(
+        access_token=jwt.encode(to_encode_access, SECRET_KEY, algorithm=ALGORITHM),
+        refresh_token=jwt.encode(to_encode_refresh, SECRET_KEY, algorithm=ALGORITHM),
+        token_type="bearer"
+    )
 
 
 async def get_session() -> AsyncSession:
@@ -18,11 +54,6 @@ async def get_current_user(
         token: Annotated[str, Depends(oauth_scheme)],
         session: Annotated[AsyncSession, Depends(get_session)]
 ) -> UserInfo:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         user_id: int = int(payload.get('sub'))
@@ -39,5 +70,9 @@ async def get_current_user(
 __all__ = [
     'get_session',
     'get_current_user',
-    'AsyncSession'
+    'AsyncSession',
+    'credentials_exception',
+    'TokenPair',
+    'TokenResponse',
+    'create_access_token'
 ]

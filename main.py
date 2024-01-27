@@ -8,6 +8,7 @@ load_dotenv(Path(getcwd()) / ".env", override=True)
 load_dotenv(Path(getcwd()) / ".env.local", override=True)
 
 from approver_backend.api import app
+from approver_backend.database.core import init_database
 
 
 def dev():
@@ -26,6 +27,8 @@ def start():
 
 def test():
     from pytest import main as tests_main
+    from asyncio import run
+    run(init_database())
 
     find_dotenv(".env.test", raise_error_if_not_found=True)
-    tests_main()
+    tests_main(args=['-W', 'ignore::pytest.PytestAssertRewriteWarning'])

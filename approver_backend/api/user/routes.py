@@ -3,16 +3,20 @@ from approver_backend.database.data_classes import UserLogin, UserInfo
 from approver_backend.database.methods import (
     create_user as _create_user,
     check_user_exists,
-    get_user as _get_user
+    get_user as _get_user,
+    set_refresh_token
 )
-from approver_backend.api.helpers import *
-from fastapi import HTTPException
-from fastapi import status
+from fastapi import HTTPException, status
 from approver_backend.api.helpers import *
 from approver_backend.api.core import pass_context
+from pydantic import Field
 
 
-@user_router.post("/create")
+class UserTokenResponse(TokenResponse):
+    user_id: int = Field(default=-1)
+
+
+@user_router.post("/create", status_code=status.HTTP_201_CREATED, response_model=UserTokenResponse)
 async def create_user(data: UserLogin, session: Annotated[AsyncSession, Depends(get_session)]):
     if await check_user_exists(session, data.username):
         raise HTTPException(
@@ -21,9 +25,15 @@ async def create_user(data: UserLogin, session: Annotated[AsyncSession, Depends(
         )
     hashed_password = pass_context.hash(data.password)
     user = await _create_user(session, data.username, hashed_password)
-    return {
-        "message": user.id
-    }
+    tokens_pair = await create_access_token(
+        {'sub': f'{user.id}'}
+    )
+    await set_refresh_token(session, user.id, tokens_pair.refresh_token)
+    response = UserTokenResponse.model_validate(
+        tokens_pair, from_attributes=True
+    )
+    response.user_id = user.id
+    return response
 
 
 @user_router.get('/me')
@@ -41,6 +51,7 @@ async def get_user(user_id: int, session: Annotated[AsyncSession, Depends(get_se
         )
     user = UserInfo.model_validate(raw_user, strict=False)
     return user
+
 
 __all__ = [
     'user_router'
