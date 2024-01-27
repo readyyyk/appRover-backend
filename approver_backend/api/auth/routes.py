@@ -39,7 +39,8 @@ async def validate_refresh(token: str, session: AsyncSession):
 
 @auth_router.get(
     '/refresh',
-    description='Refresh tokens, to refresh tokens, need change bearer token to refresh'
+    description='Refresh tokens, to refresh tokens, need change bearer token to refresh',
+    response_model=TokenResponse
 )
 async def refresh_token(
         token: Annotated[str, Depends(oauth_scheme)],
@@ -53,7 +54,10 @@ async def refresh_token(
     return tokens_pair
 
 
-@auth_router.post('/login')
+@auth_router.post(
+    '/login',
+    response_model=TokenResponse
+)
 async def login(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         session: Annotated[AsyncSession, Depends(get_session)]

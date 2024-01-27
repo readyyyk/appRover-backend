@@ -7,17 +7,8 @@ from approver_backend.database.data_classes import UserInfo
 from approver_backend.database.methods import get_user
 from .core import oauth_scheme, ALGORITHM, SECRET_KEY
 from loguru import logger
-from pydantic import BaseModel
 from datetime import timedelta, datetime
-
-
-class TokenPair(BaseModel):
-    access_token: str
-    refresh_token: str
-
-
-class TokenResponse(TokenPair):
-    token_type: str
+from .data_classes import *
 
 
 credentials_exception = HTTPException(

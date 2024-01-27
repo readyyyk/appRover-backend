@@ -9,14 +9,14 @@ from approver_backend.database.methods import (
 from fastapi import HTTPException, status
 from approver_backend.api.helpers import *
 from approver_backend.api.core import pass_context
-from pydantic import Field
+from approver_backend.api.data_classes import UserTokenResponse
 
 
-class UserTokenResponse(TokenResponse):
-    user_id: int = Field(default=-1)
-
-
-@user_router.post("/create", status_code=status.HTTP_201_CREATED, response_model=UserTokenResponse)
+@user_router.post(
+    "/create",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserTokenResponse
+)
 async def create_user(data: UserLogin, session: Annotated[AsyncSession, Depends(get_session)]):
     if await check_user_exists(session, data.username):
         raise HTTPException(
@@ -36,12 +36,18 @@ async def create_user(data: UserLogin, session: Annotated[AsyncSession, Depends(
     return response
 
 
-@user_router.get('/me')
+@user_router.get(
+    '/me',
+    response_model=UserInfo
+)
 async def get_me(info: Annotated[UserInfo, Depends(get_current_user)]):
     return info
 
 
-@user_router.get('/{user_id}')
+@user_router.get(
+    '/{user_id}',
+    response_model=UserInfo
+)
 async def get_user(user_id: int, session: Annotated[AsyncSession, Depends(get_session)]):
     raw_user = await _get_user(session, user_id)
     if raw_user is None:

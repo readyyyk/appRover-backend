@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from pydantic import computed_field
 from .core import *
 
 
@@ -27,11 +27,15 @@ class FileInfo(BaseModel):
     filetype: str
     created_at: datetime
     owner_id: int
-    link: str                       # not in model
+
+    @computed_field(return_type=str)
+    @property
+    def link(self):
+        return f'/files/{self.id}/download'
 
 
 __all__ = [
-    File,
-    FileCreate,
-    FileInfo,
+    'File',
+    'FileCreate',
+    'FileInfo'
 ]
