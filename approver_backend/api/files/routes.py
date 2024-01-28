@@ -42,8 +42,9 @@ async def get_all_files(
     user: Annotated[UserInfo, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)]
 ):
+    files = await get_user_files(session, user.id)
     return UserFilesResponse(
-        files=await get_user_files(session, user.id)
+        files=files
     )
 
 
