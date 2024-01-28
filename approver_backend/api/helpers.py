@@ -5,10 +5,11 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from approver_backend.database.data_classes import UserInfo
 from approver_backend.database.methods import get_user
-from .core import oauth_scheme, ALGORITHM, SECRET_KEY
+from .core import oauth_scheme, ALGORITHM, SECRET_KEY, ACCESS_EXPIRE_DELTA, REFRESH_EXPIRE_DELTA
 from loguru import logger
 from datetime import timedelta, datetime
 from .data_classes import *
+from os import getenv
 
 
 credentials_exception = HTTPException(
@@ -20,8 +21,8 @@ credentials_exception = HTTPException(
 
 async def create_access_token(
         data: dict,
-        expire_delta_access: timedelta = timedelta(minutes=30),
-        expire_delta_refresh: timedelta = timedelta(days=30)
+        expire_delta_access: timedelta = ACCESS_EXPIRE_DELTA,
+        expire_delta_refresh: timedelta = REFRESH_EXPIRE_DELTA
 ) -> TokenResponse:
     to_encode_access = data.copy()
     to_encode_refresh = data.copy()
