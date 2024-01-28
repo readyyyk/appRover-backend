@@ -24,3 +24,9 @@ class PollCreate(BaseModel):
     deadline: Annotated[date, AfterValidator(check_deadline)]
     file_id: int
 
+
+__all__ = [
+    'Poll',
+    'PollCreate'
+]
+
