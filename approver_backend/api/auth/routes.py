@@ -1,6 +1,7 @@
 from .core import *
 from approver_backend.api.core import oauth_scheme
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from approver_backend.api.core import pass_context, ALGORITHM, SECRET_KEY
 from approver_backend.api.helpers import *
 from approver_backend.database.methods import check_user_exists, get_user, set_refresh_token
@@ -70,6 +71,20 @@ async def login(
     })
     await set_refresh_token(session, user.id, tokens_pair.refresh_token)
     return tokens_pair
+
+
+@auth_router.post(
+    '/login/form',
+    response_model=TokenResponse
+)
+async def login_form(
+    user_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: Annotated[AsyncSession, Depends(get_session)]
+):
+    return await login(
+        UserLogin(username=user_data.username, password=user_data.password),
+        session
+    )
 
 
 __all__ = [
