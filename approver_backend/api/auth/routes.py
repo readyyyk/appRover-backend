@@ -7,7 +7,6 @@ from approver_backend.api.helpers import *
 from approver_backend.database.methods import check_user_exists, get_user, set_refresh_token
 from approver_backend.database.data_classes import UserInfo
 from jose import jwt, JWTError
-from loguru import logger
 
 
 async def auth_user(username: str, password: str, session: AsyncSession):
@@ -25,15 +24,12 @@ async def validate_refresh(token: str, session: AsyncSession):
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         user_id: int = int(payload.get('sub', -1))
         if user_id == -1:
-            logger.debug('1')
             raise credentials_exception
     except JWTError:
-        logger.debug('2')
         raise credentials_exception
     user = await get_user(session, user_id)
     if user.refresh_token == token:
         return user
-    logger.debug('3')
     raise credentials_exception
 
 
