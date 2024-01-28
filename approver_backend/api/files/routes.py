@@ -48,7 +48,7 @@ async def get_all_files(
 
 
 @files_router.get(
-    '/my/{file_id}/download',
+    '/{file_id}/download',
     response_class=StreamingResponse
 )
 async def get_file_data(
