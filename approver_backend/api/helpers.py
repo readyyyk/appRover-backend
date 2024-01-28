@@ -9,7 +9,6 @@ from .core import oauth_scheme, ALGORITHM, SECRET_KEY, ACCESS_EXPIRE_DELTA, REFR
 from loguru import logger
 from datetime import timedelta, datetime
 from .data_classes import *
-from os import getenv
 
 
 credentials_exception = HTTPException(
