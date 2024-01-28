@@ -1,5 +1,5 @@
 from .core import *
-from fastapi import UploadFile
+from fastapi import UploadFile, Form
 from fastapi.responses import StreamingResponse
 from approver_backend.api.helpers import *
 from approver_backend.database.data_classes import UserInfo
@@ -26,8 +26,10 @@ file_denied = HTTPException(
 async def upload_file(
         file: UploadFile,
         user: Annotated[UserInfo, Depends(get_current_user)],
+        filename: Annotated[str, Form],
         session: Annotated[AsyncSession, Depends(get_session)]
 ):
+    file.filename = f'{filename}.{file.filename.rsplit(".", 1)[-1]}'
     new_id = await save_file(session, file, user.id)
     return FileUploadResponse(
         created_id=new_id
