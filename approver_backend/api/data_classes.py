@@ -1,9 +1,17 @@
 from pydantic import BaseModel, Field
-from approver_backend.database.data_classes import FileInfo
+from approver_backend.database.data_classes import FileInfo, Poll
 
 
 class FileUploadResponse(BaseModel):
     created_id: int
+
+
+class PollCreateResponse(BaseModel):
+    created_id: int
+
+
+class UserPollsResponse(BaseModel):
+    polls: list[Poll]
 
 
 class TokenPair(BaseModel):
@@ -27,5 +35,8 @@ __all__ = [
     'FileUploadResponse',
     'TokenResponse',
     'TokenPair',
-    'UserTokenResponse'
+    'UserTokenResponse',
+    'PollCreateResponse',
+    'UserFilesResponse',
+    'UserPollsResponse'
 ]

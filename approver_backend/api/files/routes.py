@@ -66,7 +66,7 @@ async def get_file_data(
     return StreamingResponse(
         content=output,
         headers=headers,
-        media_type='any; charset=utf-8'
+        media_type=f'{file.filetype}; charset=utf-8'
     )
 
 
