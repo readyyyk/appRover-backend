@@ -1,13 +1,17 @@
 from .core import *
 from sqlalchemy import (
-    DateTime, ForeignKey, func
+    DateTime, ForeignKey, func, String
 )
 from datetime import datetime
-from typing import TYPE_CHECKING
 from approver_backend.database.enums import PollRole
 from sqlalchemy import Enum
 from .poll import PollModel
 from .user import UserModel
+from uuid import uuid4
+
+
+def generate_hex():
+    return uuid4().hex
 
 
 class SharePollLinkModel(Base):
@@ -27,6 +31,11 @@ class SharePollLinkModel(Base):
             PollRole,
             validate_strings=True
         )
+    )
+
+    link_hash: Mapped[str] = mapped_column(
+        String(32),
+        default=generate_hex
     )
 
     created_at: Mapped[datetime] = mapped_column(

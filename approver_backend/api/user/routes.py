@@ -3,7 +3,8 @@ from approver_backend.database.data_classes import UserLogin, UserInfo
 from approver_backend.database.methods import (
     create_user as _create_user,
     check_user_exists,
-    get_user as _get_user,
+    get_user_raw as get_user_db,
+    get_short_user,
     set_refresh_token
 )
 from fastapi import HTTPException, status
@@ -49,13 +50,12 @@ async def get_me(info: Annotated[UserInfo, Depends(get_current_user)]):
     response_model=UserInfo
 )
 async def get_user(user_id: int, session: Annotated[AsyncSession, Depends(get_session)]):
-    raw_user = await _get_user(session, user_id)
-    if raw_user is None:
+    user = await get_short_user(session, user_id)
+    if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    user = UserInfo.model_validate(raw_user, strict=False)
     return user
 
 

@@ -4,17 +4,16 @@ from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from approver_backend.api.core import pass_context, ALGORITHM, SECRET_KEY
 from approver_backend.api.helpers import *
-from approver_backend.database.methods import check_user_exists, get_user, set_refresh_token
+from approver_backend.database.methods import check_user_exists, get_user_raw, set_refresh_token
 from approver_backend.database.data_classes import UserInfo, UserLogin
 from jose import jwt, JWTError
-
 
 
 async def auth_user(username: str, password: str, session: AsyncSession):
     user_exists = await check_user_exists(session, username)
     if not user_exists:
         return False
-    user = await get_user(session, user_exists)
+    user = await get_user_raw(session, user_exists)
     if not pass_context.verify(password, user.password):
         return False
     return UserInfo.model_validate(user, strict=False)
@@ -28,7 +27,7 @@ async def validate_refresh(token: str, session: AsyncSession):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = await get_user(session, user_id)
+    user = await get_user_raw(session, user_id)
     if user.refresh_token == token:
         return user
     raise credentials_exception

@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from approver_backend.database.data_classes import UserInfo
-from approver_backend.database.methods import get_user
+from approver_backend.database.methods import get_user_raw
 from .core import oauth_scheme, ALGORITHM, SECRET_KEY, ACCESS_EXPIRE_DELTA, REFRESH_EXPIRE_DELTA
 from loguru import logger
 from datetime import timedelta, datetime
@@ -54,7 +54,7 @@ async def get_current_user(
     except JWTError as e:
         logger.exception(e)
         raise credentials_exception
-    raw_user = await get_user(session, user_id)
+    raw_user = await get_user_raw(session, user_id)
     user = UserInfo.model_validate(raw_user, strict=False)
     return user
 
