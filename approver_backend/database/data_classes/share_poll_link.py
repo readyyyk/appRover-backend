@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 from .core import *
 from approver_backend.database.enums import PollRole
@@ -15,7 +15,7 @@ class SharePollLink(BaseModel):
 
 
 class SharePollLinkCreate(BaseModel):
-    expires: Annotated[date, AfterValidator(check_deadline)]
+    expires: Annotated[datetime, AfterValidator(check_deadline)]
     role: 'PollRole'
     poll_id: int
 

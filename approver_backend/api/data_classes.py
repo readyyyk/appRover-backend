@@ -10,10 +10,6 @@ class PollCreateResponse(BaseModel):
     created_id: int
 
 
-class LinkCreateResponse(BaseModel):
-    link_hash: str
-
-
 class UserPollsResponse(BaseModel):
     polls: list[Poll]
 
@@ -42,6 +38,5 @@ __all__ = [
     'UserTokenResponse',
     'PollCreateResponse',
     'UserFilesResponse',
-    'UserPollsResponse',
-    'LinkCreateResponse'
+    'UserPollsResponse'
 ]
