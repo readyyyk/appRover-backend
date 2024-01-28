@@ -25,7 +25,7 @@ class TestUser:
     async def test_auth_user(self, random_user: RandomUser, t_client: AsyncClient):
         response = await t_client.post(
             '/auth/login',
-            data={
+            json={
                 'username': random_user.get_username(),
                 'password': random_user.get_password()
             }

@@ -1,12 +1,12 @@
 from .core import *
 from approver_backend.api.core import oauth_scheme
-from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import HTTPException, status
 from approver_backend.api.core import pass_context, ALGORITHM, SECRET_KEY
 from approver_backend.api.helpers import *
 from approver_backend.database.methods import check_user_exists, get_user, set_refresh_token
-from approver_backend.database.data_classes import UserInfo
+from approver_backend.database.data_classes import UserInfo, UserLogin
 from jose import jwt, JWTError
+
 
 
 async def auth_user(username: str, password: str, session: AsyncSession):
@@ -55,10 +55,10 @@ async def refresh_token(
     response_model=TokenResponse
 )
 async def login(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        user_data: UserLogin,
         session: Annotated[AsyncSession, Depends(get_session)]
 ):
-    user = await auth_user(form_data.username, form_data.password, session)
+    user = await auth_user(user_data.username, user_data.password, session)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
