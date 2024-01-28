@@ -18,7 +18,6 @@ async def create_poll(
     session: Annotated[AsyncSession, Depends(get_session)]
 ):
     res = await create_poll_db(session, poll_data, user.id)
-    print(res.id)
     return PollCreateResponse(
         created_id=res.id
     )
