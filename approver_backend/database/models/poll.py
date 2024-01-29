@@ -35,17 +35,17 @@ class PollModel(Base):
 
     voter_count: Mapped[int] = mapped_column(
         Integer,
-        insert_default=0,
+        default=0,
     )
 
     voted_for: Mapped[int] = mapped_column(
         Integer,
-        insert_default=0,
+        default=0,
     )
 
     voted_against: Mapped[int] = mapped_column(
         Integer,
-        insert_default=0,
+        default=0,
     )
 
     state: Mapped['PollState'] = mapped_column(
@@ -60,14 +60,16 @@ class PollModel(Base):
         ForeignKey(f'{FileModel.__tablename__}.id')
     )
     file: Mapped['FileModel'] = relationship(
-        back_populates='polls'
+        back_populates='polls',
+        lazy='selectin'
     )
 
     owner_id: Mapped[int] = mapped_column(
         ForeignKey(f'{UserModel.__tablename__}.id')
     )
     owner: Mapped['UserModel'] = relationship(
-        back_populates='polls'
+        back_populates='polls',
+        lazy='selectin'
     )
 
     #

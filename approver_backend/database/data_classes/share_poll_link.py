@@ -21,6 +21,6 @@ class SharePollLinkCreate(BaseModel):
 
 
 __all__ = [
-    SharePollLink,
-    SharePollLinkCreate,
+    'SharePollLink',
+    'SharePollLinkCreate',
 ]
