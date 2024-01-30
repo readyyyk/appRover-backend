@@ -1,10 +1,11 @@
 from .core import *
 from approver_backend.api.data_classes import *
 from approver_backend.api.helpers import *
-from approver_backend.database.data_classes import UserInfo, PollCreate
+from approver_backend.database.data_classes import UserInfo, PollCreate, Poll
 from approver_backend.database.methods import (
     create_poll as create_poll_db,
-    get_polls as get_polls_db
+    get_polls as get_polls_db,
+    get_poll as get_poll_db,
 )
 
 
@@ -31,8 +32,20 @@ async def get_polls(
     user: Annotated[UserInfo, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)]
 ) -> UserPollsResponse:
+    polls = await get_polls_db(session, user.id)
     return UserPollsResponse(
-        polls=await get_polls_db(
-            session, user.id
-        )
+        polls=polls
     )
+
+
+@poll_router.get(
+    '/{poll_id}/info',
+    response_model=Poll
+)
+async def get_single_poll(
+    poll_id: int,
+    user: Annotated[UserInfo, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)]
+) -> Poll:
+    poll = await get_poll_db(session, poll_id)
+    return Poll.model_validate(poll)

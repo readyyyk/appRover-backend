@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from .core import *
-from fastapi import UploadFile, Form
+from fastapi import UploadFile, Form, Query
 from fastapi.responses import StreamingResponse
 from approver_backend.api.helpers import *
 from approver_backend.database.data_classes import UserInfo
@@ -39,7 +39,7 @@ async def upload_file(
     except IndexError:
         ext = exts[-1]
 
-    file.filename = f'{filename}.{ext}'
+    file.filename = f'{filename}{ext}'
     new_id = await save_file(session, file, user.id)
     return FileUploadResponse(
         created_id=new_id
@@ -66,9 +66,13 @@ async def get_all_files(
 )
 async def get_file_data(
         file_id: int,
-        user: Annotated[UserInfo, Depends(get_current_user)],
+        # user: Annotated[UserInfo, Depends(get_current_user)],
+        token: Annotated[str, Query()],
         session: Annotated[AsyncSession, Depends(get_session)]
 ):
+    # manually checking token (VERY bad practise!)
+    user = await get_current_user(token, session)
+
     if not await check_access_to_file(session, file_id, user.id):
         raise file_denied
     file = await get_raw_file_from_db(session, file_id)

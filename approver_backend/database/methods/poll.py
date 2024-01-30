@@ -25,3 +25,12 @@ async def get_polls(session: AsyncSession, user_id: int):
     res = await session.execute(stmt)
     res = res.scalars()
     return res
+
+
+async def get_poll(session: AsyncSession, poll_id: int):
+    stmt = select(PollModel).where(
+        PollModel.id == poll_id
+    )
+    res = await session.execute(stmt)
+    res = res.scalar()
+    return res
