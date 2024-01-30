@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from .core import *
 from fastapi import UploadFile, Form
 from fastapi.responses import StreamingResponse
@@ -29,7 +31,12 @@ async def upload_file(
         filename: Annotated[str, Form],
         session: Annotated[AsyncSession, Depends(get_session)]
 ):
-    file.filename = f'{filename}.{file.filename.rsplit(".", 1)[-1]}'
+    exts = Path(file.filename).suffixes
+    ext = exts[-2] + exts[-1] if (
+        exts[-2] == ".tar" or exts[-2] == ".env"
+    ) else exts[-1]
+
+    file.filename = f'{filename}.{ext}'
     new_id = await save_file(session, file, user.id)
     return FileUploadResponse(
         created_id=new_id
@@ -74,7 +81,7 @@ async def get_file_data(
 
 
 @files_router.get(
-    '/my/{file_id}/info',
+    '/{file_id}/info',
     response_model=FileInfo
 )
 async def get_file_info(

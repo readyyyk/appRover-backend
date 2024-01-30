@@ -14,3 +14,10 @@ ACCESS_EXPIRE_DELTA = timedelta(minutes=float(getenv('ACCESS_MINUTES_EXPIRE')))
 REFRESH_EXPIRE_DELTA = timedelta(days=float(getenv('REFRESH_DAYS_EXPIRE')))
 
 app = APIRouter()
+
+
+@app.get('/')
+async def index():
+    return {
+        'docs': '/docs'
+    }
