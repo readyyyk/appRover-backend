@@ -28,13 +28,16 @@ file_denied = HTTPException(
 async def upload_file(
         file: UploadFile,
         user: Annotated[UserInfo, Depends(get_current_user)],
-        filename: Annotated[str, Form],
+        filename: Annotated[str, Form()],
         session: Annotated[AsyncSession, Depends(get_session)]
 ):
     exts = Path(file.filename).suffixes
-    ext = exts[-2] + exts[-1] if (
-        exts[-2] == ".tar" or exts[-2] == ".env"
-    ) else exts[-1]
+    try:
+        ext = exts[-2] + exts[-1] if (
+            exts[-2] == ".tar" or exts[-2] == ".env"
+        ) else exts[-1]
+    except IndexError:
+        ext = exts[-1]
 
     file.filename = f'{filename}.{ext}'
     new_id = await save_file(session, file, user.id)
@@ -92,6 +95,4 @@ async def get_file_info(
     if not await check_access_to_file(session, file_id, user.id):
         raise file_denied
     file = await get_raw_file_from_db(session, file_id)
-    return FileInfo.model_validate(
-        file
-    )
+    return FileInfo.model_validate(file)

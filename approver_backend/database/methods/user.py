@@ -33,7 +33,7 @@ async def get_user_raw(session: AsyncSession, user_id: int) -> UserModel:
 
 
 async def get_short_user(session: AsyncSession, user_id: int) -> UserInfo:
-    raw = get_user_raw(session, user_id)
+    raw = await get_user_raw(session, user_id)
     return UserInfo.model_validate(raw)
 
 
