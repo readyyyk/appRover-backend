@@ -31,6 +31,7 @@ class PollCreate(BaseModel):
 
 __all__ = [
     'Poll',
-    'PollCreate'
+    'PollCreate',
+    'PollWithVote',
 ]
 

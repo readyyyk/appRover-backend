@@ -14,6 +14,11 @@ from approver_backend.database.enums import PollRole
 class PollUsersModel(Base):
     __tablename__ = 'poll_users'
 
+    id: Mapped[int] = mapped_column(
+        autoincrement=True,
+        primary_key=True
+    )
+
     vote: Mapped[Optional[bool]] = mapped_column(
         Boolean,
         nullable=True
@@ -31,7 +36,7 @@ class PollUsersModel(Base):
     )
     poll_id: Mapped[int] = mapped_column(
         ForeignKey(f'{PollModel.__tablename__}.id'),
-        primary_key=True
+        # primary_key=True
     )
 
     user_id: Mapped[int] = mapped_column(

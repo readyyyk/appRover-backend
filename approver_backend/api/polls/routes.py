@@ -11,7 +11,7 @@ from approver_backend.database.methods import (
     get_poll as get_poll_db,
     check_access_poll, poll_vote, get_my_vote,
 )
-from ...database.data_classes.poll import PollWithVote
+from approver_backend.database.data_classes.poll import PollWithVote
 
 
 @poll_router.post(
@@ -53,7 +53,7 @@ async def get_single_poll(
     session: Annotated[AsyncSession, Depends(get_session)]
 ) -> PollWithVote:
     poll = await get_poll_db(session, poll_id)
-    my_vote = await get_my_vote(session, poll, user.id)
+    my_vote = await get_my_vote(session, poll.id, user.id)
     return PollWithVote.model_validate({
         **poll.__dict__,
         "my_vote": my_vote
@@ -74,7 +74,7 @@ async def vote_poll(
     if poll is None:
         raise HTTPException(status_code=404, detail='Poll not found')
 
-    is_accessed = await check_access_poll(session, poll, user.id)
+    is_accessed = await check_access_poll(session, poll_id, user.id)
     if not is_accessed:
         raise HTTPException(status_code=403, detail='Access not allowed')
 
