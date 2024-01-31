@@ -1,8 +1,9 @@
+from approver_backend.database import PollUsersModel
 from approver_backend.database.core import *
-from approver_backend.database.data_classes import PollCreate
+from approver_backend.database.data_classes import PollCreate, UserInfo
+from approver_backend.database.enums import PollRole
 from approver_backend.database.models import PollModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import defaultload
 from sqlalchemy import select
 
 
@@ -15,6 +16,14 @@ async def create_poll(session: AsyncSession, poll: PollCreate, user_id: int):
     )
     session.add(poll_created)
     await session.commit()
+
+    await add_to_poll(
+        session,
+        role=PollRole.admin,
+        poll_id=poll_created.id,
+        user_id=user_id
+    )
+
     return poll_created
 
 
@@ -34,3 +43,65 @@ async def get_poll(session: AsyncSession, poll_id: int):
     res = await session.execute(stmt)
     res = res.scalar()
     return res
+
+
+async def check_access_poll(session: AsyncSession, poll: PollModel, user_id: int) -> bool:
+    if poll.owner_id == user_id:
+        return True
+
+    stmt = select(PollUsersModel).where(
+        PollUsersModel.poll_id == poll.id and
+        PollUsersModel.user_id == user_id
+    )
+    res = await session.execute(stmt)
+    res = res.scalar()
+    if res is None:
+        return False
+
+    return True
+
+
+async def poll_vote(session: AsyncSession, poll: PollModel, user: UserInfo, is_for: bool):
+    stmt = select(PollUsersModel).where(
+        PollUsersModel.poll_id == poll.id and
+        PollUsersModel.user_id == user.id
+    )
+    res = await session.execute(stmt)
+    res = res.scalar()
+
+    if res.vote is True:
+        poll.voted_for -= 1
+    elif res.vote is False:
+        poll.voted_against -= 1
+
+    res.vote = is_for
+    if is_for:
+        poll.voted_for += 1
+    else:
+        poll.voted_against += 1
+
+    await session.commit()
+
+
+async def get_my_vote(session: AsyncSession, poll: PollModel, user_id: int) -> bool | None:
+    stmt = select(PollUsersModel).where(
+        PollUsersModel.poll_id == poll.id and
+        PollUsersModel.user_id == user_id
+    )
+    res = await session.execute(stmt)
+    res = res.scalar()
+    return res.vote if res else None
+
+
+async def add_to_poll(session: AsyncSession, role: PollRole, poll_id: int, user_id: int):
+    poll = await get_poll(session, poll_id)
+    poll.voter_count += 1
+
+    poll_users_created = PollUsersModel(
+        vote=None,
+        role=role.value,
+        poll_id=poll_id,
+        user_id=user_id,
+    )
+    session.add(poll_users_created)
+    await session.commit()

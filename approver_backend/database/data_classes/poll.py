@@ -19,6 +19,10 @@ class Poll(BaseModel):
     owner: UserInfo
 
 
+class PollWithVote(Poll):
+    my_vote: bool | None
+
+
 class PollCreate(BaseModel):
     title: str
     deadline: Annotated[date, AfterValidator(check_deadline)]

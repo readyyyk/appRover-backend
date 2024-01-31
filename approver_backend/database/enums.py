@@ -9,3 +9,4 @@ class PollState(str, Enum):
 class PollRole(str, Enum):
     voter = 'voter'
     viewer = 'viewer'
+    admin = 'admin'
