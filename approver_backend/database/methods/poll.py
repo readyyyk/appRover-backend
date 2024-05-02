@@ -29,10 +29,13 @@ async def create_poll(session: AsyncSession, poll: PollCreate, user_id: int):
 
 async def get_polls(session: AsyncSession, user_id: int):
     stmt = select(PollModel).where(
-        PollModel.owner_id == user_id
+        PollModel.id.in_(select(PollUsersModel.poll_id).where(
+            PollUsersModel.user_id == user_id
+        ))
     )
     res = await session.execute(stmt)
     res = res.scalars()
+
     return res
 
 
